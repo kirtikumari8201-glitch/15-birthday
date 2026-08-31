@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy 15th Birthday, Cutiepie!</title>
+<style>
+  :root{
+    --cream:#fff6ef;
+    --peach:#ffd9c2;
+    --coral:#ff9772;
+    --plum:#6a3b58;
+    --lilac:#c9a6ff;
+    --mint:#a6e3c4;
+    --card:#fffaf5;
+    --shadow: 0 20px 45px rgba(106,59,88,0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    height:100%;
+    font-family:'Baloo 2','Segoe UI',sans-serif;
+    background: radial-gradient(circle at 20% 10%, #ffe9d6 0%, transparent 55%),
+                radial-gradient(circle at 85% 15%, #e6d6ff 0%, transparent 50%),
+                radial-gradient(circle at 15% 90%, #d3f5e3 0%, transparent 50%),
+                var(--cream);
+    overflow:hidden;
+  }
+  @font-face{
+    font-family:'Baloo 2';
+    src:local('Baloo 2');
+  }
+  #app{
+    position:relative;
+    width:100%;
+    height:100%;
+    max-width:480px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .phone-frame{
+    position:relative;
+    width:100%;
+    max-width:400px;
+    height:min(88vh,780px);
+    margin:0 16px;
+    border-radius:38px;
+    background:var(--card);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 22px;
+  }
+  .bunting{
+    position:absolute;
+    top:0;left:0;right:0;
+    height:70px;
+    pointer-events:none;
+    z-index:5;
+  }
+  .screen{
+    width:100%;
+    height:100%;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    animation:fadeIn .5s ease;
+  }
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(12px);}to{opacity:1; transform:translateY(0);}}
+
+  h1{
+    font-size:1.5rem;
+    color:var(--plum);
+    margin:0 0 4px;
+    line-height:1.25;
+  }
+  p.sub{
+    color:#a37e93;
+    font-size:0.95rem;
+    margin:0 0 18px;
+  }
+  .panel{
+    background:linear-gradient(180deg,#fff, #ffe9dd);
+    border-radius:28px;
+    padding:26px 20px;
+    width:100%;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 12px 30px rgba(255,151,114,0.18);
+  }
+  .btn{
+    margin-top:22px;
+    border:none;
+    background:linear-gradient(135deg,var(--coral),#ffb27a);
+    color:#fff;
+    font-family:inherit;
+    font-weight:700;
+    font-size:1rem;
+    padding:14px 30px;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow:0 10px 20px rgba(255,151,114,0.4);
+    transition:transform .15s ease;
+  }
+  .btn:active{transform:scale(0.96);}
+  .btn.secondary{
+    background:linear-gradient(135deg,var(--lilac),#a67fe0);
+    box-shadow:0 10px 20px rgba(166,127,224,0.35);
+  }
+
+  /* Loading screen */
+  #screen-loading .cake-emoji{
+    font-size:3.4rem;
+    animation:bob 1.4s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+  .loading-bar{
+    width:70%;
+    height:6px;
+    background:#f3e2d6;
+    border-radius:99px;
+    margin-top:18px;
+    overflow:hidden;
+  }
+  .loading-bar span{
+    display:block;
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--coral),var(--lilac));
+    border-radius:99px;
+    animation:load 2.2s ease forwards;
+  }
+  @keyframes load{to{width:100%;}}
+
+  /* Reveal screen */
+  .mascot{
+    font-size:3.6rem;
+    margin-bottom:6px;
+  }
+
+  /* Candle screen */
+  .cake-wrap{position:relative; width:180px; height:170px; margin:0 auto 18px;}
+  .cake-body{
+    position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+    width:150px; height:110px;
+    background:linear-gradient(180deg,#ff8e8e,#e8567a);
+    border-radius:16px 16px 26px 26px;
+  }
+
+  /* frosting/candle/flame are positioned relative to .cake-body itself,
+     so they stay anchored to the top of the cake regardless of wrap height */
+  .cake-frosting{
+    position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+    width:160px; height:40px;
+    background:#fff3e6;
+    border-radius:50% 50% 20px 20px / 60% 60% 20px 20px;
+  }
+  .candle{
+    position:absolute; top:-44px; left:50%; transform:translateX(-50%);
+    width:10px; height:36px;
+    background:linear-gradient(180deg,#ff9772,#e8567a);
+    border-radius:3px;
+    z-index:2;
+  }
+  .flame{
+    position:absolute; top:-60px; left:50%; transform:translateX(-50%);
+    width:14px; height:20px;
+    background:radial-gradient(circle,#ffe27a,#ff9c3d 70%);
+    border-radius:50% 50% 50% 50%/30% 30% 70% 70%;
+    opacity:0;
+    transition:opacity .3s ease;
+    animation:flicker 1s ease-in-out infinite;
+    z-index:2;
+  }
+  .flame.lit{opacity:1;}
+  @keyframes flicker{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.15) rotate(3deg);}}
+
+  /* Banner reveal */
+  .confetti-piece{
+    position:absolute;
+    width:8px;height:14px;
+    top:-20px;
+    opacity:0.9;
+    border-radius:2px;
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{ transform:translateY(600px) rotate(400deg); opacity:0;}
+  }
+
+  /* Balloons */
+  .balloon-field{
+    position:relative;
+    width:100%;
+    height:230px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:14px;
+    margin-bottom:6px;
+  }
+  .balloon{
+    width:56px;height:70px;
+    border-radius:50% 50% 48% 48%;
+    cursor:pointer;
+    position:relative;
+    transition:transform .15s ease;
+    box-shadow: inset -8px -8px 0 rgba(0,0,0,0.06);
+  }
+  .balloon:active{transform:scale(0.92);}
+  .balloon::after{
+    content:'';
+    position:absolute;
+    bottom:-14px;left:50%;
+    width:2px;height:60px;
+    background:#c9b8c2;
+    transform:translateX(-50%);
+  }
+  .balloon.popped{
+    animation:pop .3s forwards;
+  }
+  @keyframes pop{to{transform:scale(1.6); opacity:0;}}
+  .word-line{
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--plum);
+    min-height:1.6em;
+  }
+
+  /* message card */
+  .message-box{
+    max-height:170px;
+    overflow-y:auto;
+    text-align:left;
+    color:#7a5468;
+    line-height:1.55;
+    font-size:0.95rem;
+    padding-right:4px;
+  }
+
+  /* gift */
+  .gift-hit{
+    cursor:pointer;
+    display:inline-block;
+    padding:10px;
+  }
+  .gift{
+    font-size:5rem;
+    display:inline-block;
+    transition:transform .2s ease;
+    animation:sway 2.4s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes sway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
+  .gift-hit:active .gift{transform:scale(0.9);}
+
+  .final-emoji{font-size:3rem;}
+  .badge{
+    position:absolute;
+    bottom:10px;
+    font-size:0.7rem;
+    color:#c9b3bf;
+    letter-spacing:.03em;
+  }
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="phone-frame">
+
+    <!-- decorative bunting -->
+    <svg class="bunting" viewBox="0 0 400 70" preserveAspectRatio="none">
+      <path d="M0,10 Q200,60 400,10" stroke="#f3b6c9" stroke-width="3" fill="none"/>
+      <g fill="#ff9772">
+        <polygon points="30,12 45,12 37.5,32"/>
+        <polygon points="80,14 95,14 87.5,34"/>
+        <polygon points="130,16 145,16 137.5,36"/>
+      </g>
+      <g fill="#c9a6ff">
+        <polygon points="55,13 70,13 62.5,33"/>
+        <polygon points="105,15 120,15 112.5,35"/>
+      </g>
+      <g fill="#ffd166">
+        <polygon points="250,15 265,15 257.5,35"/>
+        <polygon points="300,13 315,13 307.5,33"/>
+        <polygon points="350,11 365,11 357.5,31"/>
+      </g>
+      <g fill="#ff9772">
+        <polygon points="225,17 240,17 232.5,37"/>
+        <polygon points="275,14 290,14 282.5,34"/>
+        <polygon points="325,12 340,12 332.5,32"/>
+      </g>
+    </svg>
+
+    <!-- 1. Loading -->
+    <section id="screen-loading" class="screen active">
+      <div class="cake-emoji">🎂</div>
+      <p class="sub" style="margin-top:14px;">Loading your birthday surprise…</p>
+      <div class="loading-bar"><span></span></div>
+    </section>
+
+    <!-- 2. Reveal -->
+    <section id="screen-reveal" class="screen">
+      <div class="panel">
+        <div class="mascot">🐼</div>
+        <h1>A Cutiepie was born<br>today, 15 years ago!</h1>
+        <p class="sub" style="margin-top:10px;">Yes, it's YOU! A little surprise awaits…</p>
+        <button class="btn" onclick="goTo('screen-candle')">🎁 Start the surprise</button>
+      </div>
+    </section>
+
+    <!-- 3. Light the candle -->
+    <section id="screen-candle" class="screen">
+      <div class="panel">
+        <div class="cake-wrap">
+          <div class="cake-body">
+            <div class="cake-frosting"></div>
+            <div class="candle"></div>
+            <div class="flame" id="flame"></div>
+          </div>
+        </div>
+        <button class="btn" id="candleBtn" onclick="lightCandle()">🔥 Light the candle</button>
+      </div>
+    </section>
+
+    <!-- 4. Happy Birthday banner -->
+    <section id="screen-banner" class="screen" style="position:relative; overflow:hidden;">
+      <div id="confettiHost" style="position:absolute; inset:0; pointer-events:none;"></div>
+      <div class="panel">
+        <h1>Happy Birthday,<br>Cutiepie! 🎉</h1>
+        <div class="cake-wrap" style="transform:scale(0.85);">
+          <div class="cake-body">
+            <div class="cake-frosting"></div>
+            <div class="candle"></div>
+            <div class="flame lit"></div>
+          </div>
+        </div>
+        <button class="btn" onclick="goTo('screen-balloons')">Next →</button>
+      </div>
+    </section>
+
+    <!-- 5. Balloons -->
+    <section id="screen-balloons" class="screen">
+      <div class="panel">
+        <h1 style="font-size:1.2rem;">Pop all 4 balloons</h1>
+        <div class="balloon-field" id="balloonField"></div>
+        <div class="word-line" id="wordLine"></div>
+        <button class="btn hidden" id="balloonNext" onclick="goTo('screen-message')">Next →</button>
+      </div>
+    </section>
+
+    <!-- 6. Message -->
+    <section id="screen-message" class="screen">
+      <div class="panel">
+        <h1 style="font-size:1.3rem;">A Special Message</h1>
+        <p class="sub">Tap to read</p>
+        <div class="message-box" id="messageBox" onclick="expandMessage()">
+          Happy Birthday, Cutiepie! Turning 15 is such a big deal, and I hope this year brings you all the fun, laughter, and adventures you deserve. You've got this amazing way of making everyone around you smile, your energy, your humor, and the way you always show up for your friends. Here's to more inside jokes, more good memories, and more birthdays celebrated together. So grateful to call you my friend!
+        </div>
+        <button class="btn" onclick="goTo('screen-gift')">Next →</button>
+      </div>
+    </section>
+
+    <!-- 7. Gift -->
+    <section id="screen-gift" class="screen">
+      <div class="panel">
+        <h1 style="font-size:1.3rem;">One Last Thing…</h1>
+        <div class="gift-hit" id="giftBox" onclick="openGift()"><span class="gift">🎁</span></div>
+        <p class="sub" style="margin-top:14px;">Tap the gift</p>
+      </div>
+    </section>
+
+    <!-- 8. Final -->
+    <section id="screen-final" class="screen">
+      <div class="panel">
+        <div class="final-emoji">🐰🎈</div>
+        <h1 style="margin-top:10px;">Best Friend Vibes<br>for you 🧡</h1>
+        <p class="sub" style="margin-top:8px;">Once again, Happy 15th Birthday!<br>Hope you loved your surprise.</p>
+        <button class="btn secondary" onclick="restart()">↻ Replay</button>
+      </div>
+    </section>
+
+    <div class="badge">made with 🧡 for a friend</div>
+  </div>
+</div>
+
+<script>
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='screen-banner') launchConfetti();
+  if(id==='screen-balloons') setupBalloons();
+}
+
+// loading -> reveal
+setTimeout(()=>goTo('screen-reveal'), 2300);
+
+// candle
+function lightCandle(){
+  document.getElementById('flame').classList.add('lit');
+  document.getElementById('candleBtn').textContent = '✓ Lit!';
+  document.getElementById('candleBtn').disabled = true;
+  setTimeout(()=>goTo('screen-banner'), 900);
+}
+
+// confetti
+function launchConfetti(){
+  const host = document.getElementById('confettiHost');
+  host.innerHTML='';
+  const colors = ['#ff9772','#c9a6ff','#ffd166','#a6e3c4','#ff6f91'];
+  for(let i=0;i<40;i++){
+    const p = document.createElement('div');
+    p.className='confetti-piece';
+    p.style.left = Math.random()*100+'%';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration = (1.8+Math.random()*1.4)+'s';
+    p.style.animationDelay = (Math.random()*0.6)+'s';
+    host.appendChild(p);
+  }
+}
+
+// balloons
+const words = ['You','are','a','ROCKSTAR'];
+let poppedCount = 0;
+function setupBalloons(){
+  poppedCount = 0;
+  document.getElementById('wordLine').textContent='';
+  document.getElementById('balloonNext').classList.add('hidden');
+  const field = document.getElementById('balloonField');
+  field.innerHTML='';
+  const colors = ['#ff9772','#c9a6ff','#ffd166','#a6e3c4'];
+  words.forEach((w,i)=>{
+    const b = document.createElement('div');
+    b.className='balloon';
+    b.style.background = `radial-gradient(circle at 35% 30%, #fff, ${colors[i]} 60%)`;
+    b.dataset.word = w;
+    b.onclick = ()=>popBalloon(b);
+    field.appendChild(b);
+  });
+}
+function popBalloon(b){
+  if(b.classList.contains('popped')) return;
+  b.classList.add('popped');
+  poppedCount++;
+  const line = document.getElementById('wordLine');
+  line.textContent = (line.textContent ? line.textContent+' ' : '') + b.dataset.word;
+  if(poppedCount === words.length){
+    setTimeout(()=>document.getElementById('balloonNext').classList.remove('hidden'), 400);
+  }
+}
+
+function expandMessage(){
+  const box = document.getElementById('messageBox');
+  box.style.maxHeight = box.scrollHeight+'px';
+}
+
+function openGift(){
+  const gift = document.querySelector('#giftBox .gift');
+  gift.style.animation='none';
+  gift.style.transform='scale(1.3) rotate(10deg)';
+  setTimeout(()=>goTo('screen-final'), 500);
+}
+
+function restart(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-loading').classList.add('active');
+
+  const bar = document.querySelector('.loading-bar span');
+  bar.style.animation='none';
+  void bar.offsetWidth; // restart the loading-bar animation
+  bar.style.animation='';
+
+  document.getElementById('flame').classList.remove('lit');
+  document.getElementById('candleBtn').disabled=false;
+  document.getElementById('candleBtn').textContent='🔥 Light the candle';
+  document.getElementById('messageBox').style.maxHeight='170px';
+
+  const gift = document.querySelector('#giftBox .gift');
+  gift.style.animation='';
+  gift.style.transform='';
+
+  setTimeout(()=>goTo('screen-reveal'), 2300);
+}
+</script>
+
+</body>
+</html>
